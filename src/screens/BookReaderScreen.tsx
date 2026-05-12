@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Modal,
+  Alert,
   TextInput,
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -158,12 +159,27 @@ export const BookReaderScreen: React.FC = () => {
           verse.translations[settings.primaryLanguage]
         )
           parts.push(verse.translations[settings.primaryLanguage]);
-        await TTSService.speak(
+        const result = await TTSService.speak(
           parts.join('. ') || verse.sanskrit || '',
           settings.primaryLanguage,
           0.5,
           1.0,
         );
+        if (result === 'no-voice') {
+          setTtsPlaying(false);
+          Alert.alert(
+            'No voice installed',
+            'Your phone has no text-to-speech voice for the chosen reading language. Open Voice Settings to install one or pick a voice.',
+            [
+              {text: 'Cancel', style: 'cancel'},
+              {
+                text: 'Voice Settings',
+                onPress: () => nav.navigate('VoiceSettings'),
+              },
+            ],
+          );
+          return;
+        }
         const unsub = TTSService.onFinish(() => {
           unsub();
           speak(idx + 1);
@@ -171,7 +187,7 @@ export const BookReaderScreen: React.FC = () => {
       };
       speak(startIdx);
     },
-    [chapter, settings],
+    [chapter, settings, nav],
   );
 
   const stopTTS = useCallback(() => {

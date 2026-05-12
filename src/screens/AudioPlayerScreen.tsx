@@ -1,6 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -88,7 +89,19 @@ export const AudioPlayerScreen: React.FC<Props> = ({route, navigation}) => {
       })
       .filter(Boolean)
       .join('. ');
-    await TTSService.speak(text, language, settings.fontScale === 'sm' ? 0.45 : 0.5, 1.0);
+    const result = await TTSService.speak(text, language, settings.fontScale === 'sm' ? 0.45 : 0.5, 1.0);
+    if (result === 'no-voice') {
+      setPlaying(false);
+      Alert.alert(
+        'No voice installed',
+        `Your phone has no text-to-speech voice for the chosen language. Go to Settings → Audio → Voices to install one, or change your reading language.`,
+        [
+          {text: 'Cancel', style: 'cancel'},
+          {text: 'Open Voice Settings', onPress: () => navigation.navigate('VoiceSettings')},
+        ],
+      );
+      return;
+    }
     setPlaying(true);
   }
 

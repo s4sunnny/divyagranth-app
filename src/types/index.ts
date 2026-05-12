@@ -281,6 +281,7 @@ export type RootStackParamList = {
   DeityDetail: { deityId: DeityId };
   BookReader: { bookId: string; chapterId?: string; verseNumber?: number };
   AudioPlayer: { bookId: string; chapterId?: string };
+  VoiceSettings: undefined;
 };
 
 export type TabParamList = {

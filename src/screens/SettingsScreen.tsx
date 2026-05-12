@@ -1,13 +1,18 @@
 import React from 'react';
 import {View, Text, StyleSheet, ScrollView, Switch, TouchableOpacity, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useNavigation} from '@react-navigation/native';
+import type {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {GradientHeader} from '@/components/GradientHeader';
 import {useTheme} from '@/theme/ThemeContext';
 import {fontSizes, radii, spacing} from '@/theme/typography';
-import {AppSettings, FontScale, LanguageCode, ThemeMode} from '@/types';
+import {AppSettings, FontScale, LanguageCode, RootStackParamList, ThemeMode} from '@/types';
 import {ContentApi} from '@/api/ContentApi';
 
+type Nav = NativeStackNavigationProp<RootStackParamList>;
+
 export const SettingsScreen: React.FC = () => {
+  const nav = useNavigation<Nav>();
   const {colors, settings, updateSetting, resetSettings} = useTheme();
 
   const handleClearCache = () => {
@@ -119,6 +124,16 @@ export const SettingsScreen: React.FC = () => {
             ]}
             onChange={(v: LanguageCode) => updateSetting('primaryLanguage', v)}
             scroll
+          />
+        </Section>
+
+        {/* AUDIO & VOICES */}
+        <Section title="Audio">
+          <ActionRow
+            icon="account-voice"
+            label="Voices"
+            sublabel="Choose male / female / Indian voices per language"
+            onPress={() => nav.navigate('VoiceSettings')}
           />
         </Section>
 
@@ -252,14 +267,19 @@ function SegmentedRow<T extends string>({label, value, options, onChange, scroll
   );
 }
 
-const ActionRow: React.FC<{icon: string; label: string; onPress: () => void}> = ({
-  icon, label, onPress,
+const ActionRow: React.FC<{icon: string; label: string; sublabel?: string; onPress: () => void}> = ({
+  icon, label, sublabel, onPress,
 }) => {
   const {colors} = useTheme();
   return (
     <TouchableOpacity onPress={onPress} style={[styles.row, {borderBottomColor: colors.divider}]}>
       <Icon name={icon} size={22} color={colors.accent} />
-      <Text style={[styles.rowLabel, {color: colors.textPrimary, flex: 1, marginLeft: spacing.md}]}>{label}</Text>
+      <View style={{flex: 1, marginLeft: spacing.md}}>
+        <Text style={[styles.rowLabel, {color: colors.textPrimary}]}>{label}</Text>
+        {sublabel ? (
+          <Text style={{color: colors.textSecondary, fontSize: fontSizes.small, marginTop: 2}}>{sublabel}</Text>
+        ) : null}
+      </View>
       <Icon name="chevron-right" size={22} color={colors.textSecondary} />
     </TouchableOpacity>
   );

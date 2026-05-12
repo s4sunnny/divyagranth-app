@@ -13,6 +13,7 @@ import {DownloadsScreen} from '@/screens/DownloadsScreen';
 import {DeityScreen} from '@/screens/DeityScreen';
 import {BookReaderScreen} from '@/screens/BookReaderScreen';
 import {AudioPlayerScreen} from '@/screens/AudioPlayerScreen';
+import {VoiceSettingsScreen} from '@/screens/VoiceSettingsScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -62,5 +63,6 @@ export const AppNavigator: React.FC = () => (
     <Stack.Screen name="DeityDetail" component={DeityScreen} />
     <Stack.Screen name="BookReader" component={BookReaderScreen} options={{animation: 'slide_from_right'}} />
     <Stack.Screen name="AudioPlayer" component={AudioPlayerScreen} options={{animation: 'slide_from_bottom', presentation: 'modal'}} />
+    <Stack.Screen name="VoiceSettings" component={VoiceSettingsScreen} options={{animation: 'slide_from_right'}} />
   </Stack.Navigator>
 );
